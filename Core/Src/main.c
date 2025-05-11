@@ -56,7 +56,7 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-int speed=100;
+
 /* USER CODE END 0 */
 
 /**
@@ -98,9 +98,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
 
   while (1)
-  { Set_Motor1(1);
-   Set_Motor2(1 ,  speed);
-   Set_Motor3(1 ,  speed);
+  {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

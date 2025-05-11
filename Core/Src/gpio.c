@@ -27,7 +27,9 @@ volatile uint32_t lastDebounceTime_Pin12 = 0;
 volatile uint32_t lastDebounceTime_Pin13 = 0;
 volatile uint32_t lastDebounceTime_Pin14 = 0;
 volatile uint32_t lastDebounceTime_Pin15 = 0;
-const uint32_t debounceDelay = 50; // w ms
+const uint32_t debounceDelay = 50;// w ms
+volatile int limit=0;
+volatile int dir=0;
 /* USER CODE END 0 */
 
 /*----------------------------------------------------------------------------*/
@@ -56,7 +58,8 @@ void MX_GPIO_Init(void)
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOC, LED1_Pin|LED2_Pin|LED3_Pin|Motor1_D_Pin
-                          |Motor1_EN_Pin, GPIO_PIN_RESET);
+                          |Motor1_EN_Pin|OUT1_Pin|OUT2_Pin|OUT3_Pin
+                          |OUT4_Pin|OUT5_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOA, Motor1_IN1_Pin|Motor1_IN2_Pin|Motor2_D_Pin|Motor2_IN1_Pin
@@ -66,9 +69,11 @@ void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOB, Motor3_IN1_Pin|Motor3_IN2_Pin|Motor3_D_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pins : LED1_Pin LED2_Pin LED3_Pin Motor1_D_Pin
-                           Motor1_EN_Pin */
+                           Motor1_EN_Pin OUT1_Pin OUT2_Pin OUT3_Pin
+                           OUT4_Pin OUT5_Pin */
   GPIO_InitStruct.Pin = LED1_Pin|LED2_Pin|LED3_Pin|Motor1_D_Pin
-                          |Motor1_EN_Pin;
+                          |Motor1_EN_Pin|OUT1_Pin|OUT2_Pin|OUT3_Pin
+                          |OUT4_Pin|OUT5_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -110,10 +115,18 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     if ((GPIO_Pin == GPIO_PIN_12) && (currentTime - lastDebounceTime_Pin12 > debounceDelay))
     {
         lastDebounceTime_Pin12 = currentTime;
+        if (limit == 0)
+            limit = -1;
+        else
+            limit = 0;
     }
     else if ((GPIO_Pin == GPIO_PIN_13) && (currentTime - lastDebounceTime_Pin13 > debounceDelay))
     {
         lastDebounceTime_Pin13 = currentTime;
+        if (limit == 0)
+            limit = 1;
+        else
+            limit = 0;
     }
     else if ((GPIO_Pin == GPIO_PIN_14) && (currentTime - lastDebounceTime_Pin14 > debounceDelay))
     {
@@ -218,5 +231,57 @@ void Set_Motor3(int direction , int speed)
 	}
 
 }
+void Pomp(int pomps)
+{
+	switch(pomps)
+			{
+	case 0:
+			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_5, GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, GPIO_PIN_RESET);
+
+		break;
+	case 1:
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_5, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, GPIO_PIN_RESET);
+		break;
+	case 2:
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_5, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, GPIO_PIN_RESET);
+		break;
+	case 3:
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_5, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, GPIO_PIN_RESET);
+		break;
+	case 4:
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_5, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, GPIO_PIN_RESET);
+		break;
+	case 5:
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_5, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, GPIO_PIN_SET);
+		break;
+}
+}
+
+
+
 
 /* USER CODE END 2 */

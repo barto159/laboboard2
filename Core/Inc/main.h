@@ -77,6 +77,10 @@ void Error_Handler(void);
 #define Motor2_IN1_GPIO_Port GPIOA
 #define Motor2_IN2_Pin GPIO_PIN_7
 #define Motor2_IN2_GPIO_Port GPIOA
+#define OUT1_Pin GPIO_PIN_4
+#define OUT1_GPIO_Port GPIOC
+#define OUT2_Pin GPIO_PIN_5
+#define OUT2_GPIO_Port GPIOC
 #define Motor3_IN1_Pin GPIO_PIN_0
 #define Motor3_IN1_GPIO_Port GPIOB
 #define Motor3_IN2_Pin GPIO_PIN_1
@@ -99,6 +103,12 @@ void Error_Handler(void);
 #define Switch4_Pin GPIO_PIN_15
 #define Switch4_GPIO_Port GPIOB
 #define Switch4_EXTI_IRQn EXTI15_10_IRQn
+#define OUT3_Pin GPIO_PIN_6
+#define OUT3_GPIO_Port GPIOC
+#define OUT4_Pin GPIO_PIN_7
+#define OUT4_GPIO_Port GPIOC
+#define OUT5_Pin GPIO_PIN_8
+#define OUT5_GPIO_Port GPIOC
 
 /* USER CODE BEGIN Private defines */
 

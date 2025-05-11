@@ -51,7 +51,7 @@
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+#include "gpio.h"
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
@@ -184,7 +184,15 @@ void PendSV_Handler(void)
 void SysTick_Handler(void)
 {
   /* USER CODE BEGIN SysTick_IRQn 0 */
-
+	  if(dir==-1 && limit==-1)
+	  {
+		  dir=0;
+	  }
+	  if(dir==1 && limit==1)
+	  {
+		  dir=0;
+	  }
+	  Set_Motor1(dir);
   /* USER CODE END SysTick_IRQn 0 */
   HAL_IncTick();
   /* USER CODE BEGIN SysTick_IRQn 1 */

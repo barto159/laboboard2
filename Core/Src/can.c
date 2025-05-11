@@ -21,6 +21,7 @@
 #include "can.h"
 
 /* USER CODE BEGIN 0 */
+#include "gpio.h"
 CAN_RxHeaderTypeDef   RxHeader;
 uint8_t               RxData[8];
 /* USER CODE END 0 */
@@ -167,6 +168,14 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
   {
 
   }
+  if(RxHeader.StdId== 201)
+    {
+	  Pomp(RxData[0]);
+    }
+  if(RxHeader.StdId== 202)
+    {
+	dir= RxData[0];
+    }
   HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
 }
 /* USER CODE END 1 */

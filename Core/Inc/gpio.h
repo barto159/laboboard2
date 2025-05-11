@@ -43,6 +43,9 @@ void Motor_init();
 void Set_Motor1(int direction);
 void Set_Motor2(int direction , int speed);
 void Set_Motor3(int direction , int speed);
+void Pomp(int pomps);
+extern volatile int limit;
+extern volatile int dir;
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus
