@@ -43,6 +43,8 @@ void MX_CAN_Init(void);
 /* USER CODE BEGIN Prototypes */
 extern CAN_RxHeaderTypeDef   RxHeader;
 extern uint8_t               RxData[8];
+extern volatile int czas;
+extern volatile int16_t counter;
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus

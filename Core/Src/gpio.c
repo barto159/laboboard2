@@ -23,6 +23,7 @@
 
 /* USER CODE BEGIN 0 */
 #include "tim.h"
+#include "can.h"
 volatile uint32_t lastDebounceTime_Pin12 = 0;
 volatile uint32_t lastDebounceTime_Pin13 = 0;
 volatile uint32_t lastDebounceTime_Pin14 = 0;
@@ -95,10 +96,22 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : Switch1_Pin Switch2_Pin Switch3_Pin Switch4_Pin */
-  GPIO_InitStruct.Pin = Switch1_Pin|Switch2_Pin|Switch3_Pin|Switch4_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  /*Configure GPIO pin : Switch1_Pin */
+  GPIO_InitStruct.Pin = Switch1_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  HAL_GPIO_Init(Switch1_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : Switch2_Pin */
+  GPIO_InitStruct.Pin = Switch2_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(Switch2_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : Switch3_Pin Switch4_Pin */
+  GPIO_InitStruct.Pin = Switch3_Pin|Switch4_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/
@@ -173,7 +186,7 @@ void Set_Motor1(int direction)
 		 HAL_GPIO_WritePin(Motor1_IN2_GPIO_Port, Motor1_IN2_Pin,0);
 		 HAL_GPIO_WritePin(Motor1_EN_GPIO_Port, Motor1_EN_Pin,1);
 	}
-	else if(direction==-1)
+	else if(direction==2)
 	{
 		 HAL_GPIO_WritePin(Motor1_IN1_GPIO_Port, Motor1_IN1_Pin,0);
 		 HAL_GPIO_WritePin(Motor1_IN2_GPIO_Port, Motor1_IN2_Pin,1);
@@ -195,7 +208,7 @@ void Set_Motor2(int direction , int speed)
 		 HAL_GPIO_WritePin(Motor2_IN2_GPIO_Port, Motor2_IN2_Pin,0);
 		 __HAL_TIM_SET_COMPARE(&htim2,TIM_CHANNEL_4,speed);
 	}
-	else if(direction==-1)
+	else if(direction==2)
 	{
 		 HAL_GPIO_WritePin(Motor2_IN1_GPIO_Port, Motor2_IN1_Pin,0);
 		 HAL_GPIO_WritePin(Motor2_IN2_GPIO_Port, Motor2_IN2_Pin,1);
@@ -217,7 +230,7 @@ void Set_Motor3(int direction , int speed)
 		 HAL_GPIO_WritePin(Motor3_IN2_GPIO_Port, Motor3_IN2_Pin,0);
 		 __HAL_TIM_SET_COMPARE(&htim2,TIM_CHANNEL_3,speed);
 	}
-	else if(direction==-1)
+	else if(direction==2)
 	{
 		 HAL_GPIO_WritePin(Motor3_IN1_GPIO_Port, Motor3_IN1_Pin,0);
 		 HAL_GPIO_WritePin(Motor3_IN2_GPIO_Port, Motor3_IN2_Pin,1);
@@ -236,11 +249,14 @@ void Pomp(int pomps)
 	switch(pomps)
 			{
 	case 0:
-			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_RESET);
-			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_5, GPIO_PIN_RESET);
-			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_RESET);
-			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
-			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, GPIO_PIN_RESET);
+	   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_RESET);
+	   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_5, GPIO_PIN_RESET);
+	   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_RESET);
+	   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
+	   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, GPIO_PIN_RESET);
+	   HAL_NVIC_DisableIRQ(TIM3_IRQn);
+	   czas=0;
+	   counter=0;
 
 		break;
 	case 1:
@@ -249,6 +265,11 @@ void Pomp(int pomps)
 		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_RESET);
 		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
 		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, GPIO_PIN_RESET);
+		HAL_NVIC_DisableIRQ(TIM3_IRQn);
+		czas=10;
+		counter=0;
+	    HAL_NVIC_EnableIRQ(TIM3_IRQn);
+
 		break;
 	case 2:
 		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_RESET);
@@ -256,6 +277,10 @@ void Pomp(int pomps)
 		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_RESET);
 		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
 		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, GPIO_PIN_RESET);
+		HAL_NVIC_DisableIRQ(TIM3_IRQn);
+		czas=10;
+		counter=0;
+		HAL_NVIC_EnableIRQ(TIM3_IRQn);
 		break;
 	case 3:
 		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_RESET);
@@ -263,6 +288,10 @@ void Pomp(int pomps)
 		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_SET);
 		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
 		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, GPIO_PIN_RESET);
+		HAL_NVIC_DisableIRQ(TIM3_IRQn);
+		czas=10;
+		counter=0;
+		HAL_NVIC_EnableIRQ(TIM3_IRQn);
 		break;
 	case 4:
 		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_RESET);
@@ -270,6 +299,10 @@ void Pomp(int pomps)
 		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_RESET);
 		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
 		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, GPIO_PIN_RESET);
+		HAL_NVIC_DisableIRQ(TIM3_IRQn);
+		czas=10;
+		counter=0;
+	    HAL_NVIC_EnableIRQ(TIM3_IRQn);
 		break;
 	case 5:
 		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_RESET);
@@ -277,6 +310,10 @@ void Pomp(int pomps)
 		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_RESET);
 		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
 		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, GPIO_PIN_SET);
+		HAL_NVIC_DisableIRQ(TIM3_IRQn);
+		czas=10;
+		counter=0;
+	    HAL_NVIC_EnableIRQ(TIM3_IRQn);
 		break;
 }
 }

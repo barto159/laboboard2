@@ -34,7 +34,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+int p =0;
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -90,8 +90,19 @@ int main(void)
   MX_GPIO_Init();
   MX_CAN_Init();
   MX_TIM2_Init();
+  MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
   Motor_init();
+  HAL_TIM_Base_Start_IT(&htim3);
+  HAL_NVIC_DisableIRQ(TIM3_IRQn);
+  if(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_12)==GPIO_PIN_SET)
+  {
+	  limit=-1;
+  }
+  if(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_13)==GPIO_PIN_RESET)
+  {
+	  limit=1;
+  }
   /* USER CODE END 2 */
 
   /* Infinite loop */
